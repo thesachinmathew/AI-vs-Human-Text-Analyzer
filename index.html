@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MARSHALL - AI Text Detector</title>
+    <link rel="stylesheet" href="static/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <div class="logo">
+                <span class="logo-text">MARSHALL</span>
+                <span class="logo-subtitle">AI TEXT DETECTOR</span>
+            </div>
+            <div class="status-indicator">
+                <div class="status-dot"></div>
+                <span class="status-text">READY</span>
+            </div>
+        </header>
+
+        <main class="main-content">
+            <div class="input-section">
+                <div class="input-header">
+                    <h2>INPUT</h2>
+                    <div class="counter">
+                        <span id="char-count">0</span> / 10000
+                    </div>
+                </div>
+                <textarea 
+                    id="text-input" 
+                    placeholder="Paste your text here for analysis..."
+                    maxlength="10000"
+                ></textarea>
+                <button id="analyze-btn" class="analyze-btn" disabled>
+                    <span class="btn-text">ANALYZE</span>
+                    <div class="btn-loader">
+                        <div class="loader-bar"></div>
+                        <div class="loader-bar"></div>
+                        <div class="loader-bar"></div>
+                    </div>
+                </button>
+            </div>
+
+            <div class="output-section">
+                <div class="output-header">
+                    <h2>ANALYSIS</h2>
+                    <div class="confidence-badge" id="confidence-badge">
+                        <span id="confidence-value">--</span>%
+                    </div>
+                </div>
+                
+                <div class="results-container" id="results-container">
+                    <div class="placeholder">
+                        <div class="placeholder-icon">⚡</div>
+                        <p>Enter text and click ANALYZE to see results</p>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <footer class="footer">
+            <div class="footer-line"></div>
+            <div class="footer-text">
+                <span>© 2025 MARSHALL AI DETECTOR</span>
+                <span class="footer-dot">•</span>
+                <span>NEURAL ANALYSIS ENGINE</span>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        const textInput = document.getElementById('text-input');
+        const analyzeBtn = document.getElementById('analyze-btn');
+        const charCount = document.getElementById('char-count');
+        const resultsContainer = document.getElementById('results-container');
+        const confidenceBadge = document.getElementById('confidence-badge');
+        const confidenceValue = document.getElementById('confidence-value');
+        const statusText = document.querySelector('.status-text');
+        const statusDot = document.querySelector('.status-dot');
+
+        // Character counter and button state
+        textInput.addEventListener('input', function() {
+            const length = this.value.length;
+            charCount.textContent = length;
+            
+            if (length >= 20) {
+                analyzeBtn.disabled = false;
+                analyzeBtn.classList.add('active');
+            } else {
+                analyzeBtn.disabled = true;
+                analyzeBtn.classList.remove('active');
+            }
+        });
+
+        // Analyze button click
+        analyzeBtn.addEventListener('click', function() {
+            const text = textInput.value.trim();
+            
+            if (text.length < 20) {
+                showError('Text must be at least 20 characters long');
+                return;
+            }
+
+            analyzeText(text);
+        });
+
+        async function analyzeText(text) {
+            // Set loading state
+            analyzeBtn.classList.add('loading');
+            statusText.textContent = 'ANALYZING';
+            statusDot.style.backgroundColor = '#ffd700';
+            
+            try {
+                const response = await fetch('/analyze', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ text: text })
+                });
+
+                const data = await response.json();
+                
+                if (response.ok) {
+                    displayResults(data);
+                } else {
+                    showError(data.error || 'Analysis failed');
+                }
+            } catch (error) {
+                showError('Network error. Please try again.');
+            } finally {
+                // Reset loading state
+                analyzeBtn.classList.remove('loading');
+                statusText.textContent = 'READY';
+                statusDot.style.backgroundColor = '#00ff41';
+            }
+        }
+
+        function displayResults(data) {
+            const { prediction, confidence, indicators, stats } = data;
+            
+            // Update confidence badge
+            confidenceValue.textContent = confidence;
+            confidenceBadge.className = `confidence-badge ${prediction.toLowerCase().replace(' ', '-')}`;
+            
+            // Clear previous results
+            resultsContainer.innerHTML = '';
+            
+            // Main prediction
+            const predictionDiv = document.createElement('div');
+            predictionDiv.className = 'prediction-result';
+            predictionDiv.innerHTML = `
+                <div class="prediction-icon">${prediction === 'AI Generated' ? '🤖' : prediction === 'Human Written' ? '👤' : '⚖️'}</div>
+                <div class="prediction-text">${prediction.toUpperCase()}</div>
+                <div class="confidence-bar">
+                    <div class="confidence-fill ${prediction.toLowerCase().replace(' ', '-')}" style="width: ${confidence}%"></div>
+                </div>
+            `;
+            resultsContainer.appendChild(predictionDiv);
+
+            // Statistics
+            const statsDiv = document.createElement('div');
+            statsDiv.className = 'stats-section';
+            statsDiv.innerHTML = `
+                <h3>STATISTICS</h3>
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <span class="stat-label">WORDS</span>
+                        <span class="stat-value">${stats.word_count}</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">SENTENCES</span>
+                        <span class="stat-value">${stats.sentence_count}</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">AVG LENGTH</span>
+                        <span class="stat-value">${stats.avg_sentence_length}</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">VOCAB RATIO</span>
+                        <span class="stat-value">${stats.vocab_ratio}</span>
+                    </div>
+                </div>
+            `;
+            resultsContainer.appendChild(statsDiv);
+
+            // Indicators
+            if (indicators.ai.length > 0 || indicators.human.length > 0) {
+                const indicatorsDiv = document.createElement('div');
+                indicatorsDiv.className = 'indicators-section';
+                indicatorsDiv.innerHTML = '<h3>KEY INDICATORS</h3>';
+                
+                if (indicators.ai.length > 0) {
+                    const aiDiv = document.createElement('div');
+                    aiDiv.className = 'indicator-group ai';
+                    aiDiv.innerHTML = `
+                        <h4>AI PATTERNS</h4>
+                        ${indicators.ai.slice(0, 5).map(ind => 
+                            `<div class="indicator-item">
+                                <span class="indicator-phrase">${ind.phrase}</span>
+                                <span class="indicator-count">${ind.count}x</span>
+                            </div>`
+                        ).join('')}
+                    `;
+                    indicatorsDiv.appendChild(aiDiv);
+                }
+                
+                if (indicators.human.length > 0) {
+                    const humanDiv = document.createElement('div');
+                    humanDiv.className = 'indicator-group human';
+                    humanDiv.innerHTML = `
+                        <h4>HUMAN PATTERNS</h4>
+                        ${indicators.human.slice(0, 5).map(ind => 
+                            `<div class="indicator-item">
+                                <span class="indicator-phrase">${ind.phrase}</span>
+                                <span class="indicator-count">${ind.count}x</span>
+                            </div>`
+                        ).join('')}
+                    `;
+                    indicatorsDiv.appendChild(humanDiv);
+                }
+                
+                resultsContainer.appendChild(indicatorsDiv);
+            }
+        }
+
+        function showError(message) {
+            resultsContainer.innerHTML = `
+                <div class="error-message">
+                    <div class="error-icon">⚠️</div>
+                    <p>${message}</p>
+                </div>
+            `;
+            confidenceValue.textContent = '--';
+            confidenceBadge.className = 'confidence-badge';
+        }
+    </script>
+</body>
+</html>
