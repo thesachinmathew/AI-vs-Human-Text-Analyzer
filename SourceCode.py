@@ -260,7 +260,6 @@ class AITextDetectorGUI:
         tk.Label(results_header, text="📊 ANALYSIS RESULTS", font=("Segoe UI", 14, "bold"),
                 fg=self.colors['text'], bg=self.colors['secondary_bg']).pack(pady=15)
 
-        # Results content area
         self.results_content = tk.Frame(right_panel, bg=self.colors['card_bg'])
         self.results_content.pack(fill='both', expand=True, padx=20, pady=20)
 
