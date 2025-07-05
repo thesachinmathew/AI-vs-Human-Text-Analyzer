@@ -246,7 +246,6 @@ class AITextDetectorGUI:
         )
         self.analyze_button.pack(pady=20)
 
-        # Right panel - Results
         right_panel = tk.Frame(content_frame, bg=self.colors['card_bg'], relief='flat')
         right_panel.pack(side='right', fill='both', expand=True, padx=(10, 0))
 
