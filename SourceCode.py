@@ -41,7 +41,6 @@ class AITextDetectorGUI:
         self.setup_ui()
         self.animate_background()
         
-        # Enhanced detection indicators
         self.ai_indicators = self.get_ai_indicators()
         self.human_indicators = self.get_human_indicators()
 
