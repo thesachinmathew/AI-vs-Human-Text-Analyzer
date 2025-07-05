@@ -191,7 +191,6 @@ class AITextDetectorGUI:
         main_frame = tk.Frame(self.canvas, bg=self.colors['bg'])
         self.canvas.create_window(600, 400, window=main_frame, width=1100, height=700)
 
-        # Header section with gradient effect
         header_frame = tk.Frame(main_frame, bg=self.colors['bg'], height=120)
         header_frame.pack(fill='x', pady=(20, 0))
         header_frame.pack_propagate(False)
