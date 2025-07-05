@@ -14,7 +14,6 @@ class AITextDetectorGUI:
         self.root.configure(bg='#0f0f0f')
         self.root.resizable(True, True)
         
-        # Modern color scheme
         self.colors = {
             'bg': '#0f0f0f',
             'card_bg': '#1a1a1a',
