@@ -187,7 +187,6 @@ class AITextDetectorGUI:
         self.root.after(100, self.animate_background)
 
     def setup_ui(self):
-        # Main container
         main_frame = tk.Frame(self.canvas, bg=self.colors['bg'])
         self.canvas.create_window(600, 400, window=main_frame, width=1100, height=700)
 
