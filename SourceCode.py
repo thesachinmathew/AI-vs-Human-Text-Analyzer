@@ -204,7 +204,6 @@ class AITextDetectorGUI:
                            font=("Segoe UI", 11), fg=self.colors['text_muted'], bg=self.colors['bg'])
         subtitle.pack()
 
-        # Content area with modern card design
         content_frame = tk.Frame(main_frame, bg=self.colors['bg'])
         content_frame.pack(fill='both', expand=True, pady=20)
 
