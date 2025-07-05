@@ -268,7 +268,6 @@ class AITextDetectorGUI:
         # Initial results placeholder
         self.setup_initial_results()
 
-        # Status bar
         status_frame = tk.Frame(main_frame, bg=self.colors['secondary_bg'], height=40)
         status_frame.pack(fill='x', pady=(10, 0))
         status_frame.pack_propagate(False)
