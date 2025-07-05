@@ -166,7 +166,6 @@ class AITextDetectorGUI:
             }
             self.neurons.append(neuron)
         
-        # Create connections
         for i in range(len(self.neurons)):
             for j in range(i+1, len(self.neurons)):
                 if random.random() < 0.15:  # 15% chance of connection
