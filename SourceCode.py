@@ -212,7 +212,6 @@ class AITextDetectorGUI:
         left_panel = tk.Frame(content_frame, bg=self.colors['card_bg'], relief='flat')
         left_panel.pack(side='left', fill='both', expand=True, padx=(0, 10))
 
-        # Input section header
         input_header = tk.Frame(left_panel, bg=self.colors['secondary_bg'], height=50)
         input_header.pack(fill='x')
         input_header.pack_propagate(False)
