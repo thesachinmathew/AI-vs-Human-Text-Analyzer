@@ -153,7 +153,6 @@ class AITextDetectorGUI:
         self.neurons = []
         self.connections = []
         
-        # Create neurons
         for _ in range(25):
             x = random.randint(50, 1150)
             y = random.randint(50, 750)
