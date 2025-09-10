@@ -5,6 +5,7 @@ import time
 import random
 import re
 import math
+
 class AITextDetectorGUI:
     def __init__(self, root):
         self.root = root
